@@ -37,20 +37,26 @@ import tensorflow.keras.backend as K
 
 # make a neural net and train it to learn the evaluation values
 
-model = keras.Sequential([
-    # you can change the layers here ...
-    keras.layers.Dense(12, input_shape=(9,)),
-    keras.layers.Activation("sigmoid"),
-    keras.layers.Dense(9),
-    keras.layers.Activation("sigmoid"),
-    keras.layers.Dense(3),
-    keras.layers.Activation("softmax"),
-])
+print("Enter number of neurons in each layer (comma seperated)",)
+print("[Last layer will have 3 neurons]: ",end=" ")
 
-learning_rate = lr = 0.1
+l = map(int, input().split(","))
+
+model = keras.Sequential()
+
+for n in l:
+    model.add(keras.layers.Dense(n))
+    model.add(keras.layers.Activation("sigmoid"))
+
+model.add(keras.layers.Dense(3))
+model.add(keras.layers.Activation("softmax"))
+
+print("Enter learning rate [0.01~0.3]: ",end=" ")
+
+learning_rate = lr = float(input())
 
 model.compile(
-    optimizer=keras.optimizers.SGD(lr = learning_rate, decay=1e-4, momentum=0.9, nesterov=True),
+    optimizer=keras.optimizers.SGD(lr = learning_rate, decay=2e-4, momentum=0.9, nesterov=True),
     loss='categorical_crossentropy',
     metrics=['categorical_accuracy']
 )
@@ -68,6 +74,8 @@ labels = keras.utils.to_categorical(np.array(labels) + 1)
 delta_loss = 1
 
 i = 0
+
+print("Starting training ... \n")
 
 print("Iteration\t\tLoss\t\tAccuracy\tLR\tΔ loss")
 print("-"*85)
